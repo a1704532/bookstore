@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import bookstore.Bookstore.domain.Book;
 import bookstore.Bookstore.domain.BookRepository;
 import bookstore.Bookstore.domain.CategoryRepository;
-import bookstore.Bookstore.domain.UserRepository;
 
 @Controller
 public class BookController {
@@ -25,14 +25,10 @@ public class BookController {
 
 	@Autowired
 	private CategoryRepository crepository;
-	
-	@Autowired
-	private UserRepository urepository;
 
 	@RequestMapping(value = "/login")
 	public String login() {
-		
-		
+
 		return "login";
 	}
 
@@ -60,28 +56,23 @@ public class BookController {
 		return "addbook";
 	}
 
-	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	public String deleteBook(@PathVariable("id") Long bookId, Model model) {
+		repository.deleteById(bookId);
+		return "redirect:../booklist";
+	}
+	@PostMapping("/save")
 	public String save(Book book) {
 		repository.save(book);
 		return "redirect:booklist";
 	}
 
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	public String deleteStudent(@PathVariable("id") Long bookId, Model model) {
-		repository.deleteById(bookId);
-		return "redirect:../booklist";
+	@GetMapping("/edit/{id}")
+    public String editMovie(@PathVariable("id") Long bookId, Model model) {
+    	model.addAttribute("book", repository.findById(bookId));
+    	model.addAttribute("categories", crepository.findAll());
+    	
+    	return "editbook";
 	}
 
-	@RequestMapping(value = "/edit/{id}")
-
-	public String addStudent(@PathVariable("id") Long bookId, Model model) {
-		model.addAttribute("book", repository.findById(bookId));
-
-		return "editbook";
-	}
-
-	@GetMapping("/index")
-	public String index() {
-		return "index";
-	}
 }

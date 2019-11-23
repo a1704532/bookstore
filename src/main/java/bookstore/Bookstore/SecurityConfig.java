@@ -13,7 +13,6 @@ import bookstore.Bookstore.web.UserDetailServiceImpl;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
@@ -27,7 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
           .anyRequest().authenticated()
           .and()
-      .formLogin()
+          .formLogin()
+          .loginPage("/login")
           .defaultSuccessUrl("/booklist")
           .permitAll()
           .and()
